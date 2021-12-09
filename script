@@ -257,3 +257,13 @@ spawn(function()
     end
     end
 end)
+
+local PlayerSection = MISC:NewSection("Player")
+
+PlayerSection:NewSlider("Speed", "set your speed", 500, 10, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+
+PlayerSection:NewSlider("JumpPower", "set your Jumping's Hieght ", 500, 10, function(p)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = p
+end)
