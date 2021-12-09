@@ -49,8 +49,6 @@ MobFarmSection:NewToggle("Start Mob Farm", "Toggles the autofarming of the mobs"
         else
             local mob2 = mob
             while wait() do
-                game:GetService'VirtualUser':CaptureController()    
-                game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
                 mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mob)
                 if mob ~= mob2 then break; end
                 if getgenv().autofarmmobs == false then return end
@@ -60,6 +58,8 @@ MobFarmSection:NewToggle("Start Mob Farm", "Toggles the autofarming of the mobs"
                     end
                     if mob:FindFirstChild("HumanoidRootPart") then
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,0,4)
+                        game:GetService'VirtualUser':CaptureController()
+                        game:GetService'VirtualUser':Button1Down(Vector2.new(50, 50))
                     end
                 end
                 wait()
