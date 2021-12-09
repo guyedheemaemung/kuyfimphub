@@ -190,9 +190,7 @@ end)
 local MISC = Window:NewTab("MISC")
 local TeleportSection = MISC:NewSection("Teleport")
 
-TeleportSection:NewToggle("Start chest TP", "", function(tpc)
-    local chesttp = tpc
-    if chesttp == true then
+TeleportSection:NewButton("Start chest TP", "Just one click!!", function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-169.179108, 4.40559006, 151.861404, 0.138132066, 1.54323256e-08, -0.990413845, 7.27835783e-08, 1, 2.5732751e-08, 0.990413845, -7.56403864e-08, 0.138132066)
         wait(3)
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-459.071533, 4.18559074, 284.48587, 0.0314121135, 9.75801413e-08, -0.999506533, 2.43743639e-08, 1, 9.83943522e-08, 0.999506533, -2.745311e-08, 0.0314121135)
@@ -230,7 +228,6 @@ TeleportSection:NewToggle("Start chest TP", "", function(tpc)
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(178.000015, -69.254303, 2551.15625, 0.707134247, -0, -0.707079291, 0, 1, -0, 0.707079291, 0, 0.707134247)
         wait(3)
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-314, -69.254303, 2671.15625, 0.223131359, 0, 0.974788547, 0, 1, 0, -0.974788547, 0, 0.223131359)
-    else end
 end)
 
 TeleportSection:NewToggle("TP arrow", "click for teleport to stand arrows", function(tpa)
@@ -238,7 +235,7 @@ TeleportSection:NewToggle("TP arrow", "click for teleport to stand arrows", func
 end)
 
 spawn(function()
-    while wait() do
+    while wait(0.5) do
     if arrowtp then
     pcall(function()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Arrows.Arrow.ArrowPart.CFrame
@@ -252,7 +249,7 @@ TeleportSection:NewToggle("TP Rebirth arrow", "Click for teleport to Rebirth arr
 end)
 
 spawn(function()
-    while wait() do
+    while wait(0.5) do
     if rebirtharrowtp then
         pcall(function ()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Arrows["Rebirth Arrow"].ArrowPart.CFrame            
