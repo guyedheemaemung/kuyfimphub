@@ -1,0 +1,262 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("KUYFIMP", "Synapse")
+
+
+local mobs = {}
+getgenv().mob = nil
+
+
+for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
+    insert = true
+    for _,v2 in pairs(mobs) do if v2 == v.Name then insert = false end end
+    if insert then table.insert(mobs, v.Name) end
+end
+
+local Main = Window:NewTab("Main")
+local MobFarmSection = Main:NewSection("Mob Farm")
+
+local mobdropdown = MobFarmSection:NewDropdown("Choose Mob", "Chooses the mob to autofarm", mobs, function(v)
+    getgenv().mob = v
+end)
+
+MobFarmSection:NewToggle("Start Mob Farm", "Toggles the autofarming of the mobs", function(v)
+    getgenv().autofarmmobs = v
+    while wait() do
+        if getgenv().autofarmmobs == false then return end
+        if getgenv().mob == nil then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Hee",
+                Text = "เลือกตัวที่มึงจะตีดิไอโง่ Choose mob niggas",
+                Icon = "",
+                Duration = 2
+            })
+            getgenv().autofarmmobs = false
+            return
+        end
+        local mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mob)
+        if mob == nil then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "KUY",
+                Text = "รอก่อนดิไอโง่ Just wait niggas",
+                Icon = "",
+                Duration = 2
+            })
+            while wait() do
+                wait()
+                if getgenv().autofarmmobs == false then return end 
+                if game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mob) ~= nil then break; end
+            end
+        else
+            local mob2 = mob
+            while wait() do
+                game:GetService'VirtualUser':CaptureController()    
+                game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
+                mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mob)
+                if mob ~= mob2 then break; end
+                if getgenv().autofarmmobs == false then return end
+                if mob ~= nil then
+                    if mob:FindFirstChild("Humanoid") then
+                        if mob.Humanoid.Health == 0 then wait(0.1) mob:Destroy() break; end
+                    end
+                    if mob:FindFirstChild("HumanoidRootPart") then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,0,4)
+                    end
+                end
+                wait()
+            end
+        end
+    end
+end)
+
+game:GetService("Workspace").NPCS.ChildAdded:Connect(function()
+    for _,v2 in pairs(mobs) do table.remove(mobs, _) end
+
+    for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
+        insert = true
+        for _,v2 in pairs(mobs) do if v2 == v.Name then insert = false end end
+        if insert then table.insert(mobs, v.Name) end
+    end
+    mobdropdown:Refresh(mobs)
+end)
+
+game:GetService("Workspace").NPCS.ChildRemoved:Connect(function()
+    for _,v2 in pairs(mobs) do table.remove(mobs, _) end
+
+    for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
+        insert = true
+        for _,v2 in pairs(mobs) do if v2 == v.Name then insert = false end end
+        if insert then table.insert(mobs, v.Name) end
+    end
+    mobdropdown:Refresh(mobs)
+end)
+
+local Section = Main:NewSection("Auto Equip")
+
+local Weaponlist = {}
+local Weapon = nil
+
+for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+    table.insert(Weaponlist,v.Name)
+end
+
+Section:NewDropdown("select weapon", " ", Weaponlist, function(currentOption)
+    Weapon = currentOption
+end)
+
+Section:NewToggle("Auto Equip", " ", function(a)
+    AutoEquiped = a
+end)
+
+spawn(function()
+while wait() do
+if AutoEquiped then
+pcall(function()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Weapon))
+end)
+end
+end
+end)
+
+
+local Section = Main:NewSection("Teleport Players")
+
+players = {}
+ 
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+   table.insert(players,v.Name)
+end
+ 
+Section:NewDropdown("Select Player", " ", players, function(abc)
+    Select = abc
+end)
+
+Section:NewButton("Teleport Player", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Select].Character.HumanoidRootPart.CFrame
+end)
+
+Section:NewButton("Refresh", " ", function()
+    table.clear(players)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+    table.insert(players,v.Name)
+end
+end)
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+local Tab = Window:NewTab("OBJ&MAPS")
+local Section = Tab:NewSection("Teleport")
+
+
+Section:NewButton("Spawn", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-47.8338165, 4.34570122, 64.9913788, 0.999762058, 6.75999559e-08, -0.0218144935, -6.76990339e-08, 1, -3.803307e-09, 0.0218144935, 5.27922195e-09, 0.999762058)
+end)
+
+Section:NewButton("Desert", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-146.240677, 25.2757015, -1289.67273, 0.9997226, -3.48360238e-08, 0.0235569552, 3.26230172e-08, 1, 9.43283425e-08, -0.0235569552, -9.35336075e-08, 0.9997226)
+end)
+
+Section:NewButton("Forest", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(579.037964, 7.296875, 44.7396278, 0.999925435, 2.81164478e-08, -0.0122132795, -2.83730177e-08, 1, -2.08341984e-08, 0.0122132795, 2.11791722e-08, 0.999925435)
+end)
+
+
+Section:NewButton("Snow island", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-41.5738602, -48.3037529, 2482.60913, 0.999012768, -7.1315462e-08, -0.0444174297, 7.51288241e-08, 1, 8.41833696e-08, 0.0444174297, -8.74373143e-08, 0.999012768)
+end)
+
+Section:NewButton("Death island", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(26.0806065, -22.439455, 5630.23193, -0.97010541, -3.51692764e-09, 0.242684036, -9.74318581e-09, 1, -2.44556233e-08, -0.242684036, -2.60890474e-08, -0.97010541)
+end)
+
+
+Section:NewButton("Morioh", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(127531.648, 416.003479, -178.515579, 0.257582843, 1.07617282e-07, -0.966256201, -3.60860888e-08, 1, 1.01755745e-07, 0.966256201, 8.65787264e-09, 0.257582843)
+end)
+
+Section:NewButton("Wamuu", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").FolderOfFolders.Wamuu.Wamuu.HumanoidRootPart.CFrame
+end)
+
+Section:NewButton("Hamon Requiem", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(304.343719, 7.296875, -178.338974, -0.767717719, 2.35419026e-08, 0.640788198, 6.43673985e-08, 1, 4.03785343e-08, -0.640788198, 7.22451858e-08, -0.767717719)
+end)
+
+Section:NewButton("Vampire to Hamon", " ", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3.80350971, 25.2757015, -2405.91577, -0.014737512, 2.10109175e-09, -0.9998914, -4.00745126e-09, 1, 2.16038609e-09, 0.9998914, 4.03885458e-09, -0.014737512)
+end)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+local MISC = Window:NewTab("MISC")
+local TeleportSection = MISC:NewSection("Teleport")
+
+TeleportSection:NewToggle("Start chest TP", "", function(tpc)
+    local chesttp = tpc
+    if chesttp == true then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-169.179108, 4.40559006, 151.861404, 0.138132066, 1.54323256e-08, -0.990413845, 7.27835783e-08, 1, 2.5732751e-08, 0.990413845, -7.56403864e-08, 0.138132066)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-459.071533, 4.18559074, 284.48587, 0.0314121135, 9.75801413e-08, -0.999506533, 2.43743639e-08, 1, 9.83943522e-08, 0.999506533, -2.745311e-08, 0.0314121135)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1.95386565, 4.18559074, -364.071777, 0.299046963, 1.52549564e-08, -0.954238415, -1.03758522e-08, 1, 1.27348567e-08, 0.954238415, 6.092717e-09, 0.299046963)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(40.0933762, 42.2199097, -1014.56927, -0.518937349, -8.5352001e-09, 0.854812264, -7.44914841e-09, 1, 5.4626712e-09, -0.854812264, -3.53283935e-09, -0.518937349)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-170.53299, 26.9862919, -1988.45776, -0.961592793, 2.84741297e-08, -0.274480045, 1.83332265e-08, 1, 3.95111854e-08, 0.274480045, 3.29615659e-08, -0.961592793)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(99.4243088, -41.7210083, 2809.48364, 0.141629875, 1.4792958e-08, -0.989919662, 6.04555339e-08, 1, 2.35930937e-08, 0.989919662, -6.31876063e-08, 0.141629875)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(341.303925, 7.29288197, -174.604202, 0.983103216, -3.82337149e-08, 0.183052197, 2.84120212e-08, 1, 5.62777558e-08, -0.183052197, -5.01259585e-08, 0.983103216)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(818.646423, 7.30440521, 123.450996, -0.890243649, -2.18109122e-08, 0.455484658, -3.66665281e-10, 1, 4.71684167e-08, -0.455484658, 4.18243751e-08, -0.890243649)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(262.306946, -76.604599, 977.751099, 0.0965922177, 5.34591962e-08, -0.995324016, 1.8119648e-09, 1, 5.38861862e-08, 0.995324016, -7.00847869e-09, 0.0965922177)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-53.9999847, 2.74570203, 241.15509, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(108.500015, 2.74570203, 22.4050903, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(189.75, 2.74570203, 183.40509, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-143.999985, 2.74570084, -195.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-434.5, 2.74570203, -271.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15.0000153, 2.74570203, -285.09491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(291, 2.74570203, -258.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6.00001478, 2.74570203, -361.84491, -0.707134247, 0, 0.707079291, 0, 1, 0, -0.707079291, 0, -0.707134247)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(178.000015, -69.254303, 2551.15625, 0.707134247, -0, -0.707079291, 0, 1, -0, 0.707079291, 0, 0.707134247)
+        wait(3)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-314, -69.254303, 2671.15625, 0.223131359, 0, 0.974788547, 0, 1, 0, -0.974788547, 0, 0.223131359)
+    else end
+end)
+
+TeleportSection:NewToggle("TP arrow", "click for teleport to stand arrows", function(tpa)
+    arrowtp = tpa
+end)
+
+spawn(function()
+    while wait() do
+    if arrowtp then
+    pcall(function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Arrows.Arrow.ArrowPart.CFrame
+    end)
+    end
+    end
+    end)
+
+TeleportSection:NewToggle("TP Rebirth arrow", "Click for teleport to Rebirth arrow", function (tpr)
+    rebirtharrowtp = tpr
+end)
+
+spawn(function()
+    while wait() do
+    if rebirtharrowtp then
+        pcall(function ()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Arrows["Rebirth Arrow"].ArrowPart.CFrame            
+        end)
+    end
+    end
+end)
