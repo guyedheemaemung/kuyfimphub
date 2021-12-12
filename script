@@ -9,14 +9,11 @@ local Themes = {
     DarkContrast = Color3.fromRGB(14, 14, 14),  
     TextColor = Color3.fromRGB(255, 255, 255)
 }
-
 local Main = UI:addPage({ title = "Main",icon = 5012544693 })
 
 local AutoFarmSection = Main:addSection({title = "AutoFarm" })
 
-
 local mobs = {}
-getgenv().mobselect = nil
 
 for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
     insert = true
@@ -24,87 +21,84 @@ for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
     if insert then table.insert(mobs, v.Name) end
 end
 
-local mobdropdown = AutoFarmSection:addDropdown({
+
+
+getgenv().selectmob = nil
+
+AutoFarmSection:addDropdown({
     title = "Select Mob",
     list = mobs,
     callback = function(v)
-        getgenv().mobselect = v
+        getgenv().selectmob = v
     end
 })
 
 AutoFarmSection:addToggle({
-    title = "Start AutoFarm",
+    title = "Start Auto Farm",
     callback = function(v)
-        getgenv().autofarmmobs = v
+        getgenv().autofarm = v
         while wait() do
-            if getgenv().autofarmmobs == false then return end
-            if getgenv().mobselect == nil then
-                game.StarterGui:SetCore("SendNotification", {
-                    Title = "Hee",
-                    Text = "เลือกตัวที่มึงจะตีดิไอโง่ Choose mob niggas",
-                    Icon = "",
-                    Duration = 2
-                })
-                getgenv().autofarmmobs = false
-                return
-            end
-            local mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mobselect)
-            if mob == nil then
-                game.StarterGui:SetCore("SendNotification", {
-                    Title = "KUY",
-                    Text = "รอก่อนดิไอโง่ Just wait niggas",
-                    Icon = "",
-                    Duration = 2
-                })
-                while wait() do
-                    wait()
-                    if getgenv().autofarmmobs == false then return end 
-                    if game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mobselect) ~= nil then break; end
-                end
-            else
-                local mob2 = mob
-                while wait() do
-                    mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().mobselect)
-                    if mob ~= mob2 then break; end
-                    if getgenv().autofarmmobs == false then return end
-                    if mob ~= nil then
-                        if mob:FindFirstChild("Humanoid") then
-                            if mob.Humanoid.Health == 0 then wait(0.1) mob:Destroy() break; end
-                        end
-                        if mob:FindFirstChild("HumanoidRootPart") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,0,4)
-                            game:GetService'VirtualUser':CaptureController()
-                            game:GetService'VirtualUser':Button1Down(Vector2.new(50, 50))
-                        end
-                    end
-                    wait()
-                end
-            end
+        if getgenv().autofarm == false then return end
+        while wait() do
+        mob = game:GetService("Workspace").NPCS:FindFirstChild(getgenv().selectmob)
+        if mob:FindFirstChild("Humanoid") then
+            if mob.Humanoid.Health == 0 then wait(0.1) mob:Destroy() break; end
         end
+        if mob:FindFirstChild("HumanoidRootPart") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,0,4)
+            game:GetService'VirtualUser':CaptureController()
+            game:GetService'VirtualUser':Button1Down(Vector2.new(50, 50))
+        end
+        end
+        wait()
+    end
     end
 })
 
-game:GetService("Workspace").NPCS.ChildAdded:Connect(function()
-    for _,v2 in pairs(mobs) do table.remove(mobs, _) end
-
-    for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
-        insert = true
-        for _,v2 in pairs(mobs) do if v2 == v.Name then insert = false end end
-        if insert then table.insert(mobs, v.Name) end
+local function killaurax()
+    local StandReally1,StandReally2 = nil,nil
+    if Player.Character:FindFirstChild("Hamon") or Player.Backpack:FindFirstChild("Hamon") then
+      StandReally1 = "Hamon"
+      StandReally2 =  "Punch"
+    elseif Player.Character:FindFirstChild("Hamon Requiem") or Player.Backpack:FindFirstChild("Hamon Requiem") then
+      StandReally1 = "HamonRequiem"
+      StandReally2 = "PunchRequiem"
+    elseif Player.Character:FindFirstChild("Kars Hamon") or Player.Backpack:FindFirstChild("Kars Hamon") then
+      StandReally1 = "KarsHamon"
+      StandReally2 = "PunchKars"
+    elseif Player.Character:FindFirstChild("Ultimate Life Form") or Player.Backpack:FindFirstChild("Ultimate Life Form") then
+      StandReally1 = "ulf"
+      StandReally2 = "PunchULF"
+    elseif Player.Character:FindFirstChild("True Ultimate Life Form") or Player.Backpack:FindFirstChild("True Ultimate Life Form") then
+      StandReally1 = "tulf"
+      StandReally2 = "PunchTULF"
     end
-    mobdropdown:Refresh(mobs)
-end)
+    for i,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
+      if v:FindFirstChild"HumanoidRootPart" and (game.PlayersLocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude < 20 and v.Humanoid.Health > 0 then
+        game:GetService("ReplicateStorage").RS.Damage:FireServer(v, 99999, 0, StandReally1, false,"Right" .. StandReally2 , game.Players.LocalPlayer.UserId * 11 - 12716)
+        game:GetService("ReplicateStorage").RS.Damage:FireServer(v, 99999, 0, StandReally1 , false,"Left".. StandReally2, game.Players.LocalPlayer.UserId * 11 - 12716)
+      end
+  end
+end
 
-game:GetService("Workspace").NPCS.ChildRemoved:Connect(function()
-    for _,v2 in pairs(mobs) do table.remove(mobs, _) end
-
-    for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do
-        insert = true
-        for _,v2 in pairs(mobs) do if v2 == v.Name then insert = false end end
-        if insert then table.insert(mobs, v.Name) end
+AutoFarmSection:addToggle({
+    title = "Killaura",
+    callback = function(v)
+        killaura = v
     end
-    mobdropdown:Refresh(mobs)
-end)
+})
+
+spawn(function ()
+    while wait(.1) do
+      if killaura == false then return end
+      if killaura == true then
+        pcall(function ()
+          killaurax()
+        end)
+      end
+      wait(.1)
+    end
+  end)
 
 local AutoEquiped = Main:addSection({
     title = "AutoEquip"
@@ -243,12 +237,72 @@ local TeleportSection = MISC:addSection({
     title = "Teleport"
 })
 
-TeleportSection:addButton({
+TeleportSection:addToggle({
     title = "Start TP chests",
-    callback = function()
-        
+    callback = function(v)
+        getgenv().tpchest = v
+            if getgenv().tpchest == false then return end
+            if getgenv().tpchest == true then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-169.179108, 4.40559006, 151.861404, 0.138132066, 1.54323256e-08, -0.990413845, 7.27835783e-08, 1, 2.5732751e-08, 0.990413845, -7.56403864e-08, 0.138132066)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-459.071533, 4.18559074, 284.48587, 0.0314121135, 9.75801413e-08, -0.999506533, 2.43743639e-08, 1, 9.83943522e-08, 0.999506533, -2.745311e-08, 0.0314121135)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1.95386565, 4.18559074, -364.071777, 0.299046963, 1.52549564e-08, -0.954238415, -1.03758522e-08, 1, 1.27348567e-08, 0.954238415, 6.092717e-09, 0.299046963)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(40.0933762, 42.2199097, -1014.56927, -0.518937349, -8.5352001e-09, 0.854812264, -7.44914841e-09, 1, 5.4626712e-09, -0.854812264, -3.53283935e-09, -0.518937349)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-170.53299, 26.9862919, -1988.45776, -0.961592793, 2.84741297e-08, -0.274480045, 1.83332265e-08, 1, 3.95111854e-08, 0.274480045, 3.29615659e-08, -0.961592793)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(99.4243088, -41.7210083, 2809.48364, 0.141629875, 1.4792958e-08, -0.989919662, 6.04555339e-08, 1, 2.35930937e-08, 0.989919662, -6.31876063e-08, 0.141629875)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(341.303925, 7.29288197, -174.604202, 0.983103216, -3.82337149e-08, 0.183052197, 2.84120212e-08, 1, 5.62777558e-08, -0.183052197, -5.01259585e-08, 0.983103216)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(818.646423, 7.30440521, 123.450996, -0.890243649, -2.18109122e-08, 0.455484658, -3.66665281e-10, 1, 4.71684167e-08, -0.455484658, 4.18243751e-08, -0.890243649)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(262.306946, -76.604599, 977.751099, 0.0965922177, 5.34591962e-08, -0.995324016, 1.8119648e-09, 1, 5.38861862e-08, 0.995324016, -7.00847869e-09, 0.0965922177)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-53.9999847, 2.74570203, 241.15509, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(108.500015, 2.74570203, 22.4050903, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(189.75, 2.74570203, 183.40509, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-143.999985, 2.74570084, -195.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-434.5, 2.74570203, -271.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15.0000153, 2.74570203, -285.09491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(291, 2.74570203, -258.84491, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6.00001478, 2.74570203, -361.84491, -0.707134247, 0, 0.707079291, 0, 1, 0, -0.707079291, 0, -0.707134247)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(178.000015, -69.254303, 2551.15625, 0.707134247, -0, -0.707079291, 0, 1, -0, 0.707079291, 0, 0.707134247)
+                wait(3)
+                if getgenv().tpchest == false then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-314, -69.254303, 2671.15625, 0.223131359, 0, 0.974788547, 0, 1, 0, -0.974788547, 0, 0.223131359)
+            end
     end
 })
+
+
 
 TeleportSection:addToggle({
     title = "TP arrows",
