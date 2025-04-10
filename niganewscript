@@ -1,0 +1,51 @@
+local DiscordLib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/discord%20lib.txt")()
+local win = DiscordLib:Window("Nigga")
+local serv = win:Server("Nigga in Paris", "")
+local niggachanel = serv:Channel("Teleport Arrows")
+
+local work = game:GetService("Workspace")
+local plr = game:GetService("Players").LocalPlayer
+local szcframe = CFrame.new(-10.0488091, 24.4770222, 129.533829, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+local plrs = game:GetService("Players")
+local replicated = game:GetService("ReplicatedStorage")
+
+niggachanel:Button("Stand Arrows", function()
+    plr.Character.HumanoidRootPart.CFrame = work.Arrows.Arrow.ArrowPart.CFrame
+    wait(1)
+    plr.Character.HumanoidRootPart.CFrame = szcframe
+    end)
+
+niggachanel:Button("Rebirth Arrow", function()
+    plr.Character.HumanoidRootPart.CFrame = work.Arrows["Rebirth Arrow"].ArrowPart.CFrame
+    wait(1)
+    plr.Character.HumanoidRootPart.CFrame = szcframe
+    end)
+
+local positions = {
+        "Pos16", "Pos20", "Pos19", "Pos17", "Pos6", "Pos13", "Pos3",
+        "Pos4", "Pos14", "Pos2", "Pos15", "Pos11", "Pos1", "Pos7"
+    }
+niggachanel:Button("Chests", function ()
+    local chestPos = work:FindFirstChild("Chest1") and work.Chest1:FindFirstChild("ChestPos")
+
+    for _, posName in ipairs(positions) do
+        local pos = chestPos:FindFirstChild(posName)
+        if pos and pos:IsA("BasePart") then
+            plr.Character.HumanoidRootPart.CFrame = pos.CFrame
+            task.wait(3)
+        end
+    end
+
+    plr.Character.HumanoidRootPart.CFrame = szcframe
+end)
+
+local tpmaps = serv:Channel("Teleport Map")
+
+tpmaps:Button("Load world", function ()
+    plr.Character.HumanoidRootPart.CFrame = CFrame.new(38.5480919, -19.0944653, 5551.61035)
+    task.wait(3)
+    plr.Character.HumanoidRootPart.CFrame = CFrame.new(127626.414, 401.528015, -171.807999)
+    task.wait(3)
+    plr.Character.HumanoidRootPart.CFrame = szcframe
+    DiscordLib:Notification("Notification", "Loaded successfuly", "Okay!")
+end)
